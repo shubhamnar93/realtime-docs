@@ -23,6 +23,60 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { type Level } from "@tiptap/extension-heading";
+
+const HeadingButton = () => {
+  const { editor } = useEditorStore();
+  const headings = [
+    { label: "Heading 1", value: 1, fontSize: "32px" },
+    { label: "Heading 2", value: 2, fontSize: "24px" },
+    { label: "Heading 3", value: 3, fontSize: "20px" },
+    { label: "Heading 4", value: 4, fontSize: "18px" },
+    { label: "Heading 5", value: 5, fontSize: "16px" },
+    { label: "Paragraph", value: 0, fontSize: "16px" },
+  ];
+  const currentHeading = editor?.getAttributes("heading").level || 0;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 w-[120px] flex items-center justify-between rounded-sm hover:bg-neutral-200/80">
+          <span className="truncate">
+            {headings[currentHeading - 1]
+              ? headings[currentHeading - 1].label
+              : headings[5].label}
+          </span>
+          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-3">
+        {headings.map(({ label, value, fontSize }) => (
+          <DropdownMenuItem
+            key={value}
+            className={cn(
+              "text-sm h-7 px-2 flex items-center justify-start rounded-sm cursor-pointer",
+              currentHeading === value && "bg-neutral-200/80"
+            )}
+            onClick={() => {
+              if (value === 0) {
+                editor?.chain().focus().setParagraph().run();
+              } else {
+                editor
+                  ?.chain()
+                  .focus()
+                  .setHeading({ level: value as Level })
+                  .run();
+              }
+            }}
+            style={{ fontSize }}
+          >
+            <span>{label}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const FontFamilyButton = () => {
   const { editor } = useEditorStore();
@@ -190,6 +244,7 @@ export const Toolbar = () => {
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       <FontFamilyButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <HeadingButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       {sections[1].map((item) => (
