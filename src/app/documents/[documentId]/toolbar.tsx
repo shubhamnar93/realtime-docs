@@ -24,6 +24,62 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Level } from "@tiptap/extension-heading";
+import { type ColorResult, SketchPicker } from "react-color";
+
+const TextColorButton = () => {
+  const { editor } = useEditorStore();
+  const currentColor = editor?.getAttributes("textStyle").color || "#000000";
+  const onChangeColor = (color: ColorResult) => {
+    editor?.chain().focus().setColor(color.hex).run();
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 w-[120px] flex items-center justify-between rounded-sm hover:bg-neutral-200/80">
+          <span className="truncate" style={{ color: currentColor }}>
+            Text Color
+          </span>
+          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+        <SketchPicker color={currentColor} onChangeComplete={onChangeColor} />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+const HighlightButton = () => {
+  const { editor } = useEditorStore();
+  const currentHighlight =
+    editor?.getAttributes("highlight").color || "#FFFF00";
+  const onChangeHighlight = (color: ColorResult) => {
+    editor?.chain().focus().setHighlight({ color: color.hex }).run();
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 w-[120px] flex items-center justify-between rounded-sm hover:bg-neutral-200/80">
+          <span
+            className="truncate"
+            style={{ backgroundColor: currentHighlight }}
+          >
+            Highlight
+          </span>
+          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+        <SketchPicker
+          color={currentHighlight}
+          onChangeComplete={onChangeHighlight}
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const HeadingButton = () => {
   const { editor } = useEditorStore();
@@ -254,6 +310,8 @@ export const Toolbar = () => {
           {...item}
         />
       ))}
+      <TextColorButton />
+      <HighlightButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
       {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
