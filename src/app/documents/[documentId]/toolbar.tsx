@@ -3,6 +3,7 @@ import {
   BoldIcon,
   CheckIcon,
   ChevronDownIcon,
+  HighlighterIcon,
   ItalicIcon,
   ListTodoIcon,
   LucideIcon,
@@ -36,11 +37,12 @@ const TextColorButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="px-1.5 overflow-hidden text-sm h-7 w-[120px] flex items-center justify-between rounded-sm hover:bg-neutral-200/80">
-          <span className="truncate" style={{ color: currentColor }}>
-            Text Color
-          </span>
-          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
+        <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+          <span className="text-xs">A</span>
+          <div
+            className="h-0.5 w-full"
+            style={{ backgroundColor: currentColor }}
+          />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
@@ -61,14 +63,8 @@ const HighlightButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="px-1.5 overflow-hidden text-sm h-7 w-[120px] flex items-center justify-between rounded-sm hover:bg-neutral-200/80">
-          <span
-            className="truncate"
-            style={{ backgroundColor: currentHighlight }}
-          >
-            Highlight
-          </span>
-          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
+        <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+          <HighlighterIcon className="ml-2 size-4 shrink-0" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
