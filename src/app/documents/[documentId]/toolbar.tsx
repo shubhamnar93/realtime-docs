@@ -4,6 +4,7 @@ import {
   CheckIcon,
   ChevronDownIcon,
   HighlighterIcon,
+  ImageIcon,
   ItalicIcon,
   Link2Icon,
   ListTodoIcon,
@@ -12,9 +13,11 @@ import {
   PrinterIcon,
   Redo2Icon,
   RemoveFormattingIcon,
+  SearchIcon,
   SpellCheck2Icon,
   UnderlineIcon,
   Undo2Icon,
+  UploadIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEditorStore } from "@/store/use-editor-store";
@@ -30,7 +33,97 @@ import { type ColorResult, SketchPicker } from "react-color";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
+const ImageButton = () => {
+  const { editor } = useEditorStore();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [value, setValue] = useState("");
+
+  const onChangeLink = (url: string) => {
+    let href = url.trim();
+    if (
+      href &&
+      !/^https?:\/\//i.test(href) &&
+      !href.startsWith("/") && // allow internal links
+      !href.startsWith("#") && // allow anchor links
+      !href.startsWith("blob:") // allow blob URLs
+    ) {
+      href = "https://" + href;
+    }
+    editor?.commands.setImage({ src: href });
+    setValue("");
+  };
+  const onUploadImage = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const value = URL.createObjectURL(file);
+        onChangeLink(value);
+      }
+    };
+    input.click();
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+            <ImageIcon className="ml-2 size-4 shrink-0" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={onUploadImage}>
+            <UploadIcon className="mr-2 size-4" />
+            Upload
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              setIsDialogOpen(true);
+            }}
+          >
+            <SearchIcon className="mr-2 size-4" />
+            Paste image url
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Paste Image URL</DialogTitle>
+            <Input
+              placeholder="Enter image URL"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="mt-2"
+            />
+            <DialogFooter>
+              <Button
+                onClick={() => {
+                  onChangeLink(value);
+                  setIsDialogOpen(false);
+                }}
+              >
+                Add Image
+              </Button>
+            </DialogFooter>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
 const LinkButton = () => {
   const { editor } = useEditorStore();
   const [value, setValue] = useState("");
@@ -365,6 +458,7 @@ export const Toolbar = () => {
       <TextColorButton />
       <HighlightButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <ImageButton />
       <LinkButton />
       {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
