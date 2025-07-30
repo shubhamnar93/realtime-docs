@@ -11,6 +11,8 @@ import {
   ImageIcon,
   ItalicIcon,
   Link2Icon,
+  ListIcon,
+  ListOrderedIcon,
   ListTodoIcon,
   LucideIcon,
   MessageSquarePlusIcon,
@@ -44,6 +46,59 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+const ListButton = () => {
+  const { editor } = useEditorStore();
+
+  const [currentList, setCurrentList] = useState("Bulleted List");
+  const lists = [
+    {
+      label: "Bulleted List",
+      icon: ListIcon,
+      isActive: editor?.isActive("bulletList"),
+      onclick: () => {
+        editor?.chain().focus().toggleBulletList().run();
+        setCurrentList("Bulleted List");
+      },
+    },
+    {
+      label: "Ordered List",
+      icon: ListOrderedIcon,
+      isActive: editor?.isActive("orderedList"),
+      onclick: () => {
+        editor?.chain().focus().toggleOrderedList().run();
+        setCurrentList("Ordered List");
+      },
+    },
+  ];
+  const CurrentIcon =
+    lists.find((list) => list.label === currentList)?.icon || ListIcon;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+          <CurrentIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+        {lists.map(({ label, icon: Icon, isActive, onclick }) => (
+          <DropdownMenuItem
+            key={label}
+            className={cn(
+              "text-sm h-7 px-2 flex items-center justify-start rounded-sm cursor-pointer",
+              isActive && "bg-neutral-200/80"
+            )}
+            onClick={onclick}
+          >
+            <Icon className="mr-2 size-4" />
+            {label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const AlignButton = () => {
   const { editor } = useEditorStore();
@@ -506,6 +561,7 @@ export const Toolbar = () => {
       <LinkButton />
       <ImageButton />
       <AlignButton />
+      <ListButton />
       {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
