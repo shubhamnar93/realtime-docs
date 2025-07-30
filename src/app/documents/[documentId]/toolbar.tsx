@@ -1,5 +1,9 @@
 "use client";
 import {
+  AlignCenterIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignRightIcon,
   BoldIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -41,6 +45,47 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+const AlignButton = () => {
+  const { editor } = useEditorStore();
+  const alignmets = [
+    { label: "Left", value: "left", icon: AlignLeftIcon },
+    { label: "Center", value: "center", icon: AlignCenterIcon },
+    { label: "Right", value: "right", icon: AlignRightIcon },
+    { label: "Justify", value: "justify", icon: AlignJustifyIcon },
+  ];
+  const [currentAlignment, setCurrentAlingment] = useState("left");
+  const CurrentIcon =
+    alignmets.find((alignment) => alignment.value === currentAlignment)?.icon ||
+    AlignLeftIcon;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+          <CurrentIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+        {alignmets.map(({ label, value, icon: Icon }) => (
+          <DropdownMenuItem
+            key={value}
+            className={cn(
+              "text-sm h-7 px-2 flex items-center justify-start rounded-sm cursor-pointer",
+              editor?.isActive({ textAlign: value }) && "bg-neutral-200/80"
+            )}
+            onClick={() => {
+              editor?.chain().focus().setTextAlign(value).run();
+              setCurrentAlingment(value);
+            }}
+          >
+            <Icon className="mr-2 size-4" />
+            {label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 const ImageButton = () => {
   const { editor } = useEditorStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -79,7 +124,7 @@ const ImageButton = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
-            <ImageIcon className="ml-2 size-4 shrink-0" />
+            <ImageIcon className="size-4" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -146,7 +191,7 @@ const LinkButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
-          <Link2Icon className="ml-2 size-4 shrink-0" />
+          <Link2Icon className="size-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="p-2.5 flex flex-col items-center gap-x-2">
@@ -213,7 +258,7 @@ const HighlightButton = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
-          <HighlighterIcon className="ml-2 size-4 shrink-0" />
+          <HighlighterIcon className="size-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
@@ -298,7 +343,7 @@ const FontFamilyButton = () => {
           <span className="truncate" style={{ fontFamily: currentFont }}>
             {currentFont}
           </span>
-          <ChevronDownIcon className="ml-2 size-4 shrink-0" />
+          <ChevronDownIcon className="size-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
@@ -458,8 +503,9 @@ export const Toolbar = () => {
       <TextColorButton />
       <HighlightButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
-      <ImageButton />
       <LinkButton />
+      <ImageButton />
+      <AlignButton />
       {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}
