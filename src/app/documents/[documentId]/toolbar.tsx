@@ -5,6 +5,7 @@ import {
   ChevronDownIcon,
   HighlighterIcon,
   ItalicIcon,
+  Link2Icon,
   ListTodoIcon,
   LucideIcon,
   MessageSquarePlusIcon,
@@ -26,7 +27,62 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { type Level } from "@tiptap/extension-heading";
 import { type ColorResult, SketchPicker } from "react-color";
+import React, { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
+const LinkButton = () => {
+  const { editor } = useEditorStore();
+  const [value, setValue] = useState("");
+
+  const onChangeLink = (url: string) => {
+    let href = url.trim();
+    if (
+      href &&
+      !/^https?:\/\//i.test(href) &&
+      !href.startsWith("/") && // allow internal links
+      !href.startsWith("#") // allow anchor links
+    ) {
+      href = "https://" + href;
+    }
+    editor?.chain().focus().extendMarkRange("link").setLink({ href }).run();
+    setValue("");
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+          <Link2Icon className="ml-2 size-4 shrink-0" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-2.5 flex flex-col items-center gap-x-2">
+        <div className="flex items-center gap-x-2 w-full">
+          <Input
+            placeholder="Enter link"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+          <DropdownMenuItem>
+            <Button onClick={() => onChangeLink(value)}>Add</Button>
+          </DropdownMenuItem>
+        </div>
+        <DropdownMenuItem className="w-full">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              editor?.chain().focus().unsetLink().run();
+              setValue("");
+            }}
+            className="w-full"
+          >
+            Remove Link
+          </Button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 const TextColorButton = () => {
   const { editor } = useEditorStore();
   const currentColor = editor?.getAttributes("textStyle").color || "#000000";
@@ -309,6 +365,7 @@ export const Toolbar = () => {
       <TextColorButton />
       <HighlightButton />
       <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+      <LinkButton />
       {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
       ))}

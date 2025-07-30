@@ -37,6 +37,7 @@ body {
     --gray-2: rgba(61, 37, 20, 0.08);
     --gray-3: rgba(61, 37, 20, 0.12);
     --purple: #6a00f5;
+    --purple-contrast: #5800cc;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -232,6 +233,15 @@ body {
 
     &.ProseMirror-selectednode {
       outline: 3px solid var(--purple);
+    }
+  }
+  /* Link styles */
+  a {
+    color: var(--purple);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--purple-contrast);
     }
   }
 }
