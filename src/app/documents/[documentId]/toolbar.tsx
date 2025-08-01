@@ -11,6 +11,7 @@ import {
   ImageIcon,
   ItalicIcon,
   Link2Icon,
+  ListCollapseIcon,
   ListIcon,
   ListOrderedIcon,
   ListTodoIcon,
@@ -48,6 +49,44 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+const LineHeightButton = () => {
+  const { editor } = useEditorStore();
+  const lineHeights = [
+    { label: "Default", value: "normal" },
+    { label: "single", value: "1" },
+    { label: "1.15", value: "1.15" },
+    { label: "1.5", value: "1.5" },
+    { label: "Double", value: "2" },
+  ];
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="px-1.5 overflow-hidden text-sm h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80">
+          <ListCollapseIcon className="size-4" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="p-1 flex flex-col gap-y-1">
+        {lineHeights.map(({ label, value }) => (
+          <DropdownMenuItem
+            key={value}
+            className={cn(
+              "text-sm h-7 px-2 flex items-center justify-start rounded-sm cursor-pointer",
+              editor?.getAttributes("paragraph").lineHeight === value &&
+                "bg-neutral-200/80"
+            )}
+            onClick={() => {
+              editor?.chain().focus().setLineHeight(value).run();
+            }}
+          >
+            <span className="text=sm">{label}</span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const FontSizeButton = () => {
   const { editor } = useEditorStore();
@@ -642,6 +681,7 @@ export const Toolbar = () => {
       <LinkButton />
       <ImageButton />
       <AlignButton />
+      <LineHeightButton />
       <ListButton />
       {sections[2].map((item) => (
         <ToolbarButton key={item.label} {...item} />
