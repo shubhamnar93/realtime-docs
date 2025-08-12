@@ -16,7 +16,9 @@ export const Navbar = () => {
       <Suspense>
         <SearchInput />
       </Suspense>
-      <UserButton />
+      <div className="ml-2">
+        <UserButton />
+      </div>
     </nav>
   );
 };
