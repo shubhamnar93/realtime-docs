@@ -1,4 +1,5 @@
 "use client";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +41,9 @@ export const RemoveDialog = ({ documentId, children }: RemoveDialogProps) => {
             onClick={(e) => {
               e.stopPropagation();
               setIsRemoving(true);
-              remove({ id: documentId }).finally(() => setIsRemoving(false));
+              remove({ id: documentId })
+                .catch(() => toast.error("Something went wrong"))
+                .finally(() => setIsRemoving(false));
             }}
             disabled={isRemoving}
           >

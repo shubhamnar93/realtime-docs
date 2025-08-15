@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { toast } from "sonner";
 
 import { Id } from "@/convex/_generated/dataModel";
 import { Input } from "./ui/input";
@@ -34,12 +35,12 @@ export const RenameDialog = ({
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsUpdating(true);
-    update({ id: documentId, title: title.trim() || "untittled" }).finally(
-      () => {
+    update({ id: documentId, title: title.trim() || "untittled" })
+      .catch(() => toast.error("Something went wrong"))
+      .finally(() => {
         setIsUpdating(false);
         setIsOpen(false);
-      }
-    );
+      });
   };
   return (
     <Dialog open={open} onOpenChange={setIsOpen}>
