@@ -51,6 +51,6 @@ npm run dev
 ```
 The app will be running at http://localhost:3000
 
-or you could directly go to realtime-docs-rho.vercel.app
+or you could directly go to https://realtime-docs-rho.vercel.app/
 
 
