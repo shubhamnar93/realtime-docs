@@ -6,7 +6,6 @@ import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "@liveblocks/react-ui/styles.css";
 import "@liveblocks/react-tiptap/styles.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,7 +27,6 @@ export default function RootLayout({
         <NuqsAdapter>
           <ConvexClientProvider>
             <Toaster />
-            <SpeedInsights />
             {children}
           </ConvexClientProvider>
         </NuqsAdapter>
